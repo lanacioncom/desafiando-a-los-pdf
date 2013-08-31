@@ -5,7 +5,7 @@ import re
 
 def obtenerPalabras(file):
     with open(file,'r') as myfile:
-        data=myfile.read().replace('\n', '')
+        data=myfile.read().replace('\n', ' ')
 
     data = re.sub(r'\.',' ',data)
     data = re.sub(r'[^a-zA-Z\s]','',data)

@@ -46,4 +46,7 @@ if __name__ == "__main__":
 
 
     sorted_x = sorted(scores.iteritems(), key=operator.itemgetter(1))
-    print sorted_x
+    sorted_x.reverse()
+
+    for x in sorted_x:
+        print x[0], x[1]
