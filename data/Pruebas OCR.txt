@@ -1,0 +1,27 @@
+Se probaron los siguientes productos:
+
+- Adobe Acrobat XI Pro
+- Omnipage 18
+- NitroPDF 8
+- ABBYY FineReader 11
+- ReadIRIS 14
+
+
+Los mejores resultados de obtuvieron con ReadIRIS 14.
+
+La versión Corporate (500 Euros) permite:
+
+Multi-page document recognition:
+Depending on your needs, Readiris 14 can convert from one single page up to an unlimited volume of documents.
+
+
+Batch OCR and document separation:
+Separate your batches of documents using barecodes or blank pages. Barcodes will allow Readiris™ 14 to recognize and save documents into specific output locations automatically.	-	
+
+Watched folders:
+Leave Readiris™ Corporate running day after day: any image files you place or change inside the watched folder will be automatically processed.
+
+
+Más datos en:
+http://www.irislink.com/c2-2115-189/Readiris-14--OCR-Software--Scan--Convert---Manage-your-Documents-.aspx
+	-	
