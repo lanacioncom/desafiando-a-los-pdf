@@ -1,2 +1,6 @@
+<<<<<<< HEAD
 *.sw*
 *.pyc
+=======
+data/error.txt
+>>>>>>> 74a390ce000fc48ffad9010fae7339d6e9670ef7
