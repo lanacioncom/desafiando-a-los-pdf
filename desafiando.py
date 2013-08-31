@@ -9,30 +9,28 @@ import operator
 def help():
     print "%s <input-1> <input-2> ... <input-n>" % (sys.argv[0])
 
-def procesarArchivo(path):
-    cantidad = extraer_palabra.ExtraerPalabras(path)
-    #cantidadDeCaracteres = extraer_palabra.obtenerCantidadDeCaracteres(file)
-    cantidadDeCaracteres = cantidad.obtenerCantidadDeCaracteres()
-    #data = extraer_palabra.obtenerPalabras(file)
-    data = cantidad.obtenerPalabras()
-    validas = 0
-    lem = lemario.Lemario()
-    caracteresValidos = 0
-    caracteres = 0
-    for palabra in data:
-        if len(palabra) < 2:
-            continue
-        #print "palabra %s" % palabra
-        palabraLen = len(palabra)
-        caracteres += palabraLen
+def computarScore(lem, path):
+    archivo = extraer_palabra.ExtraerPalabras(path)
+
+    cantidadDeCaracteres = archivo.obtenerCantidadDeCaracteres()
+    palabrasParseadas = archivo.obtenerPalabras()
+
+    cantidadDeCaracteresValidos = 0
+    cantidadDePalabrasBuenas = 0
+    cantidadDePalabrasMalas = 0
+    for palabra in palabrasParseadas:
         if lem.check_word(palabra):
-            caracteresValidos += palabraLen
+            cantidadDeCaracteresValidos += len(palabra)
+            cantidadDePalabrasBuenas = cantidadDePalabrasBuenas + 1
+        else:
+            cantidadDePalabrasMalas = cantidadDePalabrasMalas + 1
 
-    return score(caracteresValidos, cantidadDeCaracteres)
+    cantidadDeCaracteresInvalidos = cantidadDeCaracteres - cantidadDeCaracteresValidos
+    cantidadDePalabrasInvalidas = cantidadDeCaracteresValidos / 12
 
-def score(caracteresValidos, cantidadDeCaracteres):
-    return float(caracteresValidos) / cantidadDeCaracteres
+    score = float(cantidadDePalabrasBuenas) / (cantidadDePalabrasMalas + cantidadDePalabrasInvalidas)
 
+    return score
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -43,13 +41,14 @@ if __name__ == "__main__":
         help()
         exit(0)
 
+    lem = lemario.Lemario()
+
     scores = {}
     for file in sys.argv[1:]:
-        scores.update({file: procesarArchivo(file)})
+        scores.update({file: computarScore(lem, file)})
 
+    scores_ordenados = sorted(scores.iteritems(), key=operator.itemgetter(1))
+    scores_ordenados.reverse()
 
-    sorted_x = sorted(scores.iteritems(), key=operator.itemgetter(1))
-    sorted_x.reverse()
-
-    for x in sorted_x:
+    for x in scores_ordenados:
         print x[0], x[1]
