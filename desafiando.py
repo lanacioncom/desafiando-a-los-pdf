@@ -10,8 +10,11 @@ def help():
     print "%s <input-1> <input-2> ... <input-n>" % (sys.argv[0])
 
 def procesarArchivo(path):
-    cantidadDeCaracteres = extraer_palabra.obtenerCantidadDeCaracteres(file)
-    data = extraer_palabra.obtenerPalabras(file)
+    cantidad = extraer_palabra.ExtraerPalabras(path)
+    #cantidadDeCaracteres = extraer_palabra.obtenerCantidadDeCaracteres(file)
+    cantidadDeCaracteres = cantidad.obtenerCantidadDeCaracteres()
+    #data = extraer_palabra.obtenerPalabras(file)
+    data = cantidad.obtenerPalabras()
     validas = 0
     lem = lemario.Lemario()
     caracteresValidos = 0
