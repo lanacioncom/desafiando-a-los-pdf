@@ -3,8 +3,9 @@
 
 class Lemario:
     def __init__(self):
-        self.lemario = open('data/lemario.txt', 'r')
-        self.spelling = open('data/spelling.txt', 'r')
+        self.spelling_file = 'data/spelling.txt'
+        self.lemario_file = 'data/lemario.txt'
+        self.error_file = 'data/error.txt'
         self.lemario_list = []
         self.spelling_wrong_list = []
         self.spelling_right_list = []
@@ -15,6 +16,8 @@ class Lemario:
         try:
             return self.lemario_list.index(word) > -1
         except:
+            with open(self.error_file, 'a') as error_file:
+                error_file.write(word + '\n')
             return False
 
 
@@ -26,14 +29,19 @@ class Lemario:
             return word
 
     def _generate_lists(self):
-        for words in self.spelling:
-            wrong, right = words.strip().split('->')
-            self.spelling_wrong_list.append(wrong)
-            self.spelling_right_list.append(right)
+        with open(self.spelling_file, 'r') as spelling:
+            for words in spelling:
+                wrong, right = words.strip().split('->')
+                self.spelling_wrong_list.append(wrong)
+                self.spelling_right_list.append(right)
 
-        for w in self.lemario:
-            self.lemario_list.append(w.strip())
+        with open(self.lemario_file, 'r') as lemario:
+            for w in lemario:
+                self.lemario_list.append(w.strip())
 
 if __name__ == "__main__":
     lemario = Lemario()
     print lemario.check_word("abaxxx")
+    print lemario.check_word("abaxxx1")
+    print lemario.check_word("abaxxx2")
+    print lemario.check_word("hola")
