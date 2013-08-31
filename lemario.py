@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import bisect
 
 class Lemario:
     def __init__(self):
@@ -11,12 +12,16 @@ class Lemario:
         self._generate_lists()
 
     def check_word(self, word):
-        word = self._check_spelling(word.lower())
-        try:
-            return self.lemario_list.index(word) > -1
-        except:
-            return False
+        #word = self._check_spelling(word.lower())
+        #try:
+        #    return self.lemario_list.index(word) > -1
+        #except:
+        #    return False
+        i = bisect.bisect_left(self.lemario_list, word)
+        if i != len(self.lemario_list) and self.lemario_list[i] == word:
+            return True
 
+        return False
 
     def _check_spelling(self, word):
         try:
