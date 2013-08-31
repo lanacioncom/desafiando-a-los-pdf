@@ -9,28 +9,60 @@ import operator
 def help():
     print "%s <input-1> <input-2> ... <input-n>" % (sys.argv[0])
 
-def computarScore(lem, path):
-    archivo = extraer_palabra.ExtraerPalabras(path)
+class ProcesadorDeTxt:
+    def __init__(self, path, lemario=lemario.Lemario()):
+        self.lemario = lemario
+        self.archivo = extraer_palabra.ExtraerPalabras(path)
+        self.cantidadDeCaracteres = self.archivo.obtenerCantidadDeCaracteres()
+        self.palabrasParseadas = self.archivo.obtenerPalabras()
+        self.cantidadDeCaracteresValidos = 0
+        self.cantidadDePalabrasBuenas = 0
+        self.cantidadDePalabrasMalas = 0
+        self.cantidadDeCaracteresInvalidos = 0
+        self.cantidadDePalabrasInvalidas = 0
 
-    cantidadDeCaracteres = archivo.obtenerCantidadDeCaracteres()
-    palabrasParseadas = archivo.obtenerPalabras()
+    def procesar(self):
+        self.cantidadDeCaracteresValidos = 0
+        self.cantidadDePalabrasBuenas = 0
+        self.cantidadDePalabrasMalas = 0
+        for palabra in self.palabrasParseadas:
+            if self.lemario.check_word(palabra):
+                self.cantidadDeCaracteresValidos += len(palabra)
+                self.cantidadDePalabrasBuenas = self.cantidadDePalabrasBuenas + 1
+            else:
+                self.cantidadDePalabrasMalas = self.cantidadDePalabrasMalas + 1
 
-    cantidadDeCaracteresValidos = 0
-    cantidadDePalabrasBuenas = 0
-    cantidadDePalabrasMalas = 0
-    for palabra in palabrasParseadas:
-        if lem.check_word(palabra):
-            cantidadDeCaracteresValidos += len(palabra)
-            cantidadDePalabrasBuenas = cantidadDePalabrasBuenas + 1
-        else:
-            cantidadDePalabrasMalas = cantidadDePalabrasMalas + 1
+        self.cantidadDeCaracteresInvalidos = self.cantidadDeCaracteres - self.cantidadDeCaracteresValidos
+        self.cantidadDePalabrasInvalidas = self.cantidadDeCaracteresValidos / 12
 
-    cantidadDeCaracteresInvalidos = cantidadDeCaracteres - cantidadDeCaracteresValidos
-    cantidadDePalabrasInvalidas = cantidadDeCaracteresValidos / 12
+    def score(self):
+        score = 10 * float(self.cantidadDePalabrasBuenas) / (self.cantidadDePalabrasMalas + self.cantidadDePalabrasInvalidas)
+        return score
 
-    score = float(cantidadDePalabrasBuenas) / (cantidadDePalabrasMalas + cantidadDePalabrasInvalidas)
 
-    return score
+#def procesarArchivo(path):
+#    cantidad = extraer_palabra.ExtraerPalabras(path)
+#    #cantidadDeCaracteres = extraer_palabra.obtenerCantidadDeCaracteres(file)
+#    cantidadDeCaracteres = cantidad.obtenerCantidadDeCaracteres()
+#    #data = extraer_palabra.obtenerPalabras(file)
+#    data = cantidad.obtenerPalabras()
+#    validas = 0
+#    lem = lemario.Lemario()
+#    caracteresValidos = 0
+#    caracteres = 0
+#    for palabra in data:
+#        if len(palabra) < 2:
+#            continue
+#        #print "palabra %s" % palabra
+#        palabraLen = len(palabra)
+#        caracteres += palabraLen
+#        if lem.check_word(palabra):
+#            caracteresValidos += palabraLen
+#
+#    return score(caracteresValidos, cantidadDeCaracteres)
+#
+#def score(caracteresValidos, cantidadDeCaracteres):
+#    return float(caracteresValidos) / cantidadDeCaracteres
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -45,7 +77,9 @@ if __name__ == "__main__":
 
     scores = {}
     for file in sys.argv[1:]:
-        scores.update({file: computarScore(lem, file)})
+        score = ProcesadorDeTxt(file)
+        score.procesar()
+        scores.update({file: score.score()})
 
     scores_ordenados = sorted(scores.iteritems(), key=operator.itemgetter(1))
     scores_ordenados.reverse()
