@@ -9,29 +9,56 @@ import operator
 def help():
     print "%s <input-1> <input-2> ... <input-n>" % (sys.argv[0])
 
-def procesarArchivo(path):
-    cantidad = extraer_palabra.ExtraerPalabras(path)
-    #cantidadDeCaracteres = extraer_palabra.obtenerCantidadDeCaracteres(file)
-    cantidadDeCaracteres = cantidad.obtenerCantidadDeCaracteres()
-    #data = extraer_palabra.obtenerPalabras(file)
-    data = cantidad.obtenerPalabras()
-    validas = 0
-    lem = lemario.Lemario()
-    caracteresValidos = 0
-    caracteres = 0
-    for palabra in data:
-        if len(palabra) < 2:
-            continue
-        #print "palabra %s" % palabra
-        palabraLen = len(palabra)
-        caracteres += palabraLen
-        if lem.check_word(palabra):
-            caracteresValidos += palabraLen
+class ProcesadorDeTxt:
+    def __init__(self, path, lemario=lemario.Lemario()):
+        self.path = path;
+        self.cantidadDecaracteres = 0
+        self.validas = 0
+        self.lemario = lemario
+        self.caracteres = 0
+        self.cantidad = extraer_palabra.ExtraerPalabras(path)
+        self.caracteresValidos = 0
 
-    return score(caracteresValidos, cantidadDeCaracteres)
+    def procesar(self):
+        self.cantidadDeCaracteres = self.cantidad.obtenerCantidadDeCaracteres()
+        data = self.cantidad.obtenerPalabras()
 
-def score(caracteresValidos, cantidadDeCaracteres):
-    return float(caracteresValidos) / cantidadDeCaracteres
+        for palabra in data:
+            if len(palabra) < 2:
+                continue
+
+            palabraLen = len(palabra)
+            self.caracteres += palabraLen
+            if self.lemario.check_word(palabra):
+                self.caracteresValidos += palabraLen
+
+
+    def score(self):
+        return float(self.caracteresValidos) / self.cantidadDeCaracteres
+
+#def procesarArchivo(path):
+#    cantidad = extraer_palabra.ExtraerPalabras(path)
+#    #cantidadDeCaracteres = extraer_palabra.obtenerCantidadDeCaracteres(file)
+#    cantidadDeCaracteres = cantidad.obtenerCantidadDeCaracteres()
+#    #data = extraer_palabra.obtenerPalabras(file)
+#    data = cantidad.obtenerPalabras()
+#    validas = 0
+#    lem = lemario.Lemario()
+#    caracteresValidos = 0
+#    caracteres = 0
+#    for palabra in data:
+#        if len(palabra) < 2:
+#            continue
+#        #print "palabra %s" % palabra
+#        palabraLen = len(palabra)
+#        caracteres += palabraLen
+#        if lem.check_word(palabra):
+#            caracteresValidos += palabraLen
+#
+#    return score(caracteresValidos, cantidadDeCaracteres)
+#
+#def score(caracteresValidos, cantidadDeCaracteres):
+#    return float(caracteresValidos) / cantidadDeCaracteres
 
 
 if __name__ == "__main__":
@@ -45,7 +72,10 @@ if __name__ == "__main__":
 
     scores = {}
     for file in sys.argv[1:]:
-        scores.update({file: procesarArchivo(file)})
+        #scores.update({file: procesarArchivo(file)})
+        score = ProcesadorDeTxt(file)
+        score.procesar()
+        scores.update({file: score.score()})
 
 
     sorted_x = sorted(scores.iteritems(), key=operator.itemgetter(1))
